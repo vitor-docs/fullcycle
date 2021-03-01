@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goserver
+  labels:
+    app: goserver
+spec:
+  selector:
+    matchLabels:
+      app: goserverapp
+  replicas: 2
+  template:
+    metadata:
+        labels:
+          app: "goserverapp"
+    spec:
+      containers:
+        - name: hello
+          image: "vitordocs/hellogo:v2"
