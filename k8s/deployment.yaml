@@ -15,5 +15,36 @@ spec:
           app: "goserverapp"
     spec:
       containers:
-        - name: hello
-          image: "vitordocs/hellogo:v2"
+        - name: "hello"
+          image: "vitordocs/hellogo:8.5"
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 80
+            periodSeconds: 3
+            failureThreshold: 1
+            initialDelaySeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            periodSeconds: 5
+            failureThreshold: 1
+            timeoutSeconds: 1
+            successThreshold: 1
+          envFrom:
+            - configMapRef:
+                name: goserver-env
+            - secretRef: 
+                name : goserver-secret
+          volumeMounts:
+            - mountPath: "/go/myfamily"
+              name: "config"
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: goserver-configmap-family
+            items:
+              - key: members
+                path: "family.txt"
